@@ -21,6 +21,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/koi_tray.svg DESTINATI
 
 find_package(KF5Config)
 find_package(KF5CoreAddons)
+find_package(KF5Solid)
 find_package(KF5WidgetsAddons)
 find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS DBus Gui Network Test)
@@ -63,6 +64,7 @@ target_link_libraries(koi PUBLIC
     KF5::ConfigCore
     KF5::ConfigGui
     KF5::CoreAddons
+    KF5::Solid
     KF5::WidgetsAddons
     Qt::Core
     Qt::DBus

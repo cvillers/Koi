@@ -10,6 +10,8 @@
 #include <QSystemTrayIcon>
 #include <QMessageBox>
 #include <QCloseEvent>
+// KF5 libs
+#include <Solid/Power>
 //Other libs
 #include "libs/Scheduler.h"
 
@@ -43,6 +45,7 @@ private slots:
     void scheduleLight();
     void scheduleDark();
     void scheduleSunEvent();
+    void recheckState(bool scheduleNewEvents);
 
     void on_prefsBtn_clicked();
     void on_backBtn_clicked();
@@ -86,6 +89,8 @@ private slots:
     void on_notifyCheckBox_stateChanged(int arg1);
 
     void on_actionRestart_triggered();
+
+    void on_resumeFromSuspend();
 
 private:
     Ui::MainWindow *ui;

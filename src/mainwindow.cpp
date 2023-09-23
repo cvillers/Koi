@@ -18,25 +18,35 @@ MainWindow::MainWindow(QWidget *parent)
     ui->mainStack->setCurrentIndex(0); // Always start window on main view
     refreshDirs();
     loadPrefs(); // Load prefs on startup
-    if (utils.settings->value("schedule").toBool()) {
-        if (utils.settings->value("schedule-type").toString() == "time") { //Scheduled switch
-            utils.startupTimeCheck(); // Switch themes on startup
-            scheduleLight();
-            scheduleDark();
-        } else { //Auto sun switch
-            utils.startupSunCheck(); // Switch themes on startup
-            scheduleSunEvent();
-        }
-    }
+    recheckState(true);
     ui->resMsg->hide();
     auto actionRes = new QAction("Restart", this);
     actionRes->setIcon(QIcon::fromTheme("view-refresh"));
     connect(actionRes, &QAction::triggered, this, &MainWindow::on_actionRestart_triggered);
     ui->resMsg->addAction(actionRes);
+    connect(Solid::Power::self(), &Solid::Power::resumeFromSuspend, this, &MainWindow::on_resumeFromSuspend);
 }
 MainWindow::~MainWindow()
 {
     this->setVisible(0);
+}
+
+void MainWindow::recheckState(bool scheduleNewEvents)
+{
+    if (utils.settings->value("schedule").toBool()) {
+        if (utils.settings->value("schedule-type").toString() == "time") { //Scheduled switch
+            utils.startupTimeCheck(); // Switch themes on startup
+            if(scheduleNewEvents) {
+                scheduleLight();
+                scheduleDark();
+            }
+        } else { //Auto sun switch
+            utils.startupSunCheck(); // Switch themes on startup
+            if(scheduleNewEvents) {
+                scheduleSunEvent();
+            }
+        }
+    }
 }
 
 // Override window managing events
@@ -822,4 +832,9 @@ void MainWindow::on_actionRestart_triggered()
 {
     QProcess::startDetached(QApplication::applicationFilePath(),QStringList());
     exit(12);
+}
+
+void MainWindow::on_resumeFromSuspend()
+{
+    recheckState(false);
 }
